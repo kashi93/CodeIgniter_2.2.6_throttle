@@ -5,15 +5,21 @@ class Throttle extends CI_Controller
 	public function index()
 	{
 		$this->load->driver('cache', array('adapter' => 'apc', 'backup' => 'file'));
+	
 		$key = "in_use";
 		$second = 120;
+		$cache = $this->cache;
 
-		if ($this->cache->get($key) == true) {
+		if($this->cache->apc->is_supported() == false){
+			$cache = $this->cache->file;
+		}
+
+		if ($cache->get($key) == true) {
 			echo "To many attempt";
 			return "To many attempt";
 		}
 
-		$this->cache->save($key, true, $second);
+		$cache->save($key, true, $second);
 
 		// ...,
 
